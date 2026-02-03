@@ -28,21 +28,21 @@ function calcularOrcamento() {
 
     // 2. Pintura
     const estado = document.getElementById('estadoParede').value;
-    let basePintura = estado === 'simples' ? 120 : 180;
+    let basePintura = estado === 'simples' ? 20 : 35;
     totalPintura = (metros / 12) * basePintura;
 
     // 3. Massa / Acabamento Fino
     const tipoMassa = document.getElementById('tipoMassa').value;
     totalMassa = 0;
     if (tipoMassa === 'reparos') totalMassa = Number(document.getElementById('valorReparoMassa').value) || 0;
-    else if (tipoMassa === 'fino_corrida') totalMassa = (metros / 12) * 100;
-    else if (tipoMassa === 'fino_acrilica') totalMassa = (metros / 12) * 130;
+    else if (tipoMassa === 'fino_corrida') totalMassa = (metros / 12) * 120;
+    else if (tipoMassa === 'fino_acrilica') totalMassa = (metros / 12) * 140;
 
     // 4. Lixamento / Reparos
     const tipoLixa = document.getElementById('tipoLixamento').value;
     totalLixamento = 0;
     if (tipoLixa === 'reparos_lixa') totalLixamento = Number(document.getElementById('valorReparoLixa').value) || 0;
-    else if (tipoLixa === 'lixa_corrida') totalLixamento = (metros / 12) * 20;
+    else if (tipoLixa === 'lixa_corrida') totalLixamento = (metros / 12) * 25;
     else if (tipoLixa === 'lixa_acrilica') totalLixamento = (metros / 12) * 35;
 
     // 5. Extras
@@ -70,3 +70,4 @@ function irParaOrcamento() {
     localStorage.setItem('orcamentoFinal', JSON.stringify(dados));
     window.location.href = 'orcamento.html';
 }
+
