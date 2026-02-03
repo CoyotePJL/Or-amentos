@@ -1,47 +1,72 @@
-function toggleUmidade(){
-    const temUmidade = document.getElementById('umidadeSim').Checked;
-    document.getElementById('campoValorUmidade').style.display = temUmidade ? 'block' : 'none';
+let totalGeral, totalPintura, totalMassa, totalLixamento, valorUmidadeTotal, valorExtraTotal;
+
+function toggleUmidade() { document.getElementById('campoValorUmidade').style.display = document.getElementById('umidadeSim').checked ? 'block' : 'none'; }
+function toggleExtra() { document.getElementById('campoServicoExtra').style.display = document.getElementById('extraSim').checked ? 'block' : 'none'; }
+function checkReparoMassa() { document.getElementById('reparoMassaManual').style.display = document.getElementById('tipoMassa').value === 'reparos' ? 'block' : 'none'; }
+function checkReparoLixa() { document.getElementById('reparoLixaManual').style.display = document.getElementById('tipoLixamento').value === 'reparos_lixa' ? 'block' : 'none'; }
+
+function atualizarOpcoesExtra() {
+    const tipo = document.getElementById('tipoExtra').value;
+    const sub = document.getElementById('subOpcoesExtra');
+    const item = document.getElementById('itemExtra');
+    sub.style.display = tipo ? 'block' : 'none';
+    if(tipo === 'verniz') {
+        item.innerHTML = '<option value="15">Folha de Janela (R$15)</option><option value="70">Porta Lisa (R$70)</option><option value="90">Porta Detalhada (R$90)</option>';
+    } else {
+        item.innerHTML = '<option value="25">Folha Janela Metal (R$25)</option><option value="80">Porta Lisa Metal (R$80)</option><option value="100">Porta Detalhada Metal (R$100)</option>';
+    }
 }
 
-function toggleMassa(){
-    const selecao = document.getElementById('tipoMassa').value;
-    document.getElementById('campoMassaManual').style.display = (selecao === 'pequeno') ? 'block' 'none';
-    document.getElementById('campoDemaosMassa').style.display = (selecao === 'corrida' || selecao === 'acrilica') ? 'block' : 'none';
-}
+function calcularOrcamento() {
+    const metros = (Number(document.getElementById('qtdParedes').value) || 1) * (Number(document.getElementById('metros').value) || 0);
+    
+    // 1. Umidade
+    valorUmidadeTotal = 0;
+    if(document.getElementById('umidadeSim').checked) {
+        valorUmidadeTotal = Number(document.getElementById('valorUmidade').value) || 0;
+    }
 
-function toggleLixamento(){
-    const selecao = document.getElementById('tipoLixamento').value;
-    document.getElementById('campoLixamentoManual').style.display = (selecao === 'manual_pequeno') ? 'block' : 'none';
-}
+    // 2. Pintura
+    const estado = document.getElementById('estadoParede').value;
+    let basePintura = estado === 'simples' ? 120 : 180;
+    totalPintura = (metros / 12) * basePintura;
 
-function calcularOrcamento(){
-    const metros = Number(document.getElementById('metros').value) || 0;
-    const m2base = 12; //regua de 12m²
-
-    //calculo de umidade
-    const valorUmidade = Number(document.getElementById('valorUmidade').value) || 0;
-
-    //calculo de massa
-    let totalMassa = 0;
+    // 3. Massa / Acabamento Fino
     const tipoMassa = document.getElementById('tipoMassa').value;
-    if (tipoMassa === 'pequeno'){
-        totalMassa = Number(document.getElementById('valorMassaManual').value) || 0;
-    } else if (tipoMassa === 'corrida' || tipoMassa === 'acrilica'){
-        const precoBaseMassa = (tipoMassa === 'corrida') ? 120 : 140; //preço da massa por demao
-        const demaosMassa = Number(document.getElementById('demaosMassa').value) || 1;
-        totalMassa = (metros / m2base) * precoBaseMassa * demaosMassa;
+    totalMassa = 0;
+    if (tipoMassa === 'reparos') totalMassa = Number(document.getElementById('valorReparoMassa').value) || 0;
+    else if (tipoMassa === 'fino_corrida') totalMassa = (metros / 12) * 100;
+    else if (tipoMassa === 'fino_acrilica') totalMassa = (metros / 12) * 130;
+
+    // 4. Lixamento / Reparos
+    const tipoLixa = document.getElementById('tipoLixamento').value;
+    totalLixamento = 0;
+    if (tipoLixa === 'reparos_lixa') totalLixamento = Number(document.getElementById('valorReparoLixa').value) || 0;
+    else if (tipoLixa === 'lixa_corrida') totalLixamento = (metros / 12) * 20;
+    else if (tipoLixa === 'lixa_acrilica') totalLixamento = (metros / 12) * 35;
+
+    // 5. Extras
+    valorExtraTotal = 0;
+    if(document.getElementById('extraSim').checked) {
+        valorExtraTotal = Number(document.getElementById('itemExtra').value) * Number(document.getElementById('qtdExtra').value);
     }
 
-    //calculo de lixamento
-    let totalLixamento = 0;
-    const tipoLixamento = document.getElementById('tipoLixamento').value;
-    if (tipoLixamento === 'manual_pequeno') {
-        totalLixamento = Number(document.getElementById('valorLixaManual').value) || 0;
-    } else if (tipoLixamento === 'lixa_corrida' || tipoLixamento === 'lixa_acrilica'){
-        const precoBaseLixa = (tipoLixamento === 'lixa_corrida') ? 25 : 35;
-        totalLixamento = (metros/m2base) * precoBaseLixa;
-    }
-
-    // calculo de pintura
+    totalGeral = totalPintura + totalMassa + totalLixamento + valorExtraTotal + valorUmidadeTotal;
+    document.getElementById('status').innerHTML = `<strong>Total: R$ ${totalGeral.toFixed(2)}</strong>`;
+    document.getElementById('btnCliente').style.display = 'block';
 }
 
+function irParaOrcamento() {
+    const dados = {
+        total: totalGeral,
+        itens: [
+            { nome: "Serviço de Pintura", valor: totalPintura },
+            { nome: "Massa / Acabamento Fino", valor: totalMassa },
+            { nome: "Lixamento / Preparo", valor: totalLixamento },
+            { nome: "Tratamento de Umidade", valor: valorUmidadeTotal },
+            { nome: "Extras (Verniz/Metal)", valor: valorExtraTotal }
+        ]
+    };
+    localStorage.setItem('orcamentoFinal', JSON.stringify(dados));
+    window.location.href = 'orcamento.html';
+}
