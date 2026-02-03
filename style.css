@@ -1,0 +1,63 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f0f2f5;
+    margin: 0;
+    padding: 15px;
+}
+
+.container {
+    max-width: 100%;
+    margin: auto;
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column; /* Alinha tudo em coluna */
+}
+
+h1 { color: #007bff; text-align: center; margin-bottom: 25px; }
+
+.campo-orcamento {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 18px;
+}
+
+label { font-weight: 600; margin-bottom: 8px; color: #444; }
+
+input, select {
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    width: 100%;
+    box-sizing: border-box; /* Garante que o padding não aumente o tamanho */
+}
+
+button {
+    background-color: #28a745;
+    color: white;
+    padding: 16px;
+    border: none;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    margin: 10px 0;
+}
+
+.aviso {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-left: 5px solid #007bff;
+    border-radius: 4px;
+    font-size: 15px;
+}
+
+.opcoes-radio {
+    display: flex;
+    gap: 20px;
+    padding: 10px 0;
+}
