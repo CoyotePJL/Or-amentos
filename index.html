@@ -1,98 +1,98 @@
-<!doctype html>
-    <html>
-        <head>
-            <meta charset="UTF-8">
-            <title>Calculadora de Orçamentos</title>
-            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-            <link rel="stylesheet" href="style.css">
-        </head>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ingá Pintura</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+    <div class="container">
+        <h1 style="text-align: center; color: #28a745; margin-bottom: 25px;">
+            Ingá Pintura
+        </h1>
 
-        <body>
-            <div class="container">
-                <h1>Orçamento Ingá Pintura</h1>
-                
-                <div class="campo-orçamento">
-                    <label for="metros">Tamanho da parede (m²):</label>
-                    <input type="number" id="metros" placeholder="Ex: 12" value="12">
-                    <small>Sua base de calculo é 12m²</small>
-                </div>
+        <div class="campo-orcamento">
+            <label>Quantidade de Paredes:</label>
+            <input type="number" id="qtdParedes" value="1">
+        </div>
 
-                <button onclick="proximoPasso()">Confirmar área</button>
+        <div class="campo-orcamento">
+            <label>M² de cada parede:</label>
+            <input type="number" id="metros" value="12">
+        </div>
 
-                <div id="status" class="aviso"></div>
+        <div class="campo-orcamento">
+            <label>Possui umidade para tratar?</label>
+            <div class="opcoes-radio">
+                <input type="radio" name="umidade" id="umidadeNao" checked onclick="toggleUmidade()"> Não
+                <input type="radio" name="umidade" id="umidadeSim" onclick="toggleUmidade()"> Sim
             </div>
+        </div>
+        <div id="campoValorUmidade" style="display:none;" class="campo-orcamento">
+            <input type="number" id="valorUmidade" placeholder="Valor do tratamento (R$)">
+        </div>
 
-            <div class="campo-orçamento">
-                <label>Possui umidade para tratar?</label>
-                <div class="opcoes-radio">
-                    <input type="radio" name="umidade" value="nao" id="umidadeNao" checked onclick="toggleUmidade()">
-                    <label for="umidadeNao" class="label-inline">Não</label>
+        <div class="campo-orcamento">
+            <label>Aplicação de Massa / Reparos:</label>
+            <select id="tipoMassa" onchange="checkReparoMassa()">
+                <option value="nenhuma">Nenhuma</option>
+                <option value="reparos">Pequenos Reparos (Valor Manual)</option>
+                <option value="fino_corrida">Acabamento Fino c/ M. Corrida (m²)</option>
+                <option value="fino_acrilica">Acabamento Fino c/ M. Acrílica (m²)</option>
+            </select>
+        </div>
+        <div id="reparoMassaManual" style="display:none;" class="campo-orcamento">
+            <input type="number" id="valorReparoMassa" placeholder="Valor da Massa/Reparo (R$)">
+        </div>
 
-                    <input type="radio" name="umidade" value="sim" id="umidadeSim" onclick="toggleUmidade()">
-                    <label for="umidadeSim" class="label-inline">Sim</label>
-                </div>
+        <div class="campo-orcamento">
+            <label>Tipo de Lixamento:</label>
+            <select id="tipoLixamento" onchange="checkReparoLixa()">
+                <option value="nao">Não precisa lixar</option>
+                <option value="reparos_lixa">Reparos Pontuais (Valor Manual)</option>
+                <option value="lixa_corrida">Lixamento Massa Corrida (m²)</option>
+                <option value="lixa_acrilica">Lixamento Massa Acrílica (m²)</option>
+            </select>
+        </div>
+        <div id="reparoLixaManual" style="display:none;" class="campo-orcamento">
+            <input type="number" id="valorReparoLixa" placeholder="Valor do Lixamento (R$)">
+        </div>
+
+        <div class="campo-orcamento">
+            <label>Estado Atual da Parede:</label>
+            <select id="estadoParede">
+                <option value="simples">Parede Simples (R$ 120)</option>
+                <option value="gesso">Gesso (R$ 180)</option>
+            </select>
+        </div>
+
+        <div class="campo-orcamento">
+            <label>Deseja extras (Verniz/Metal)?</label>
+            <div class="opcoes-radio">
+                <input type="radio" name="extra" id="extraNao" checked onclick="toggleExtra()"> Não
+                <input type="radio" name="extra" id="extraSim" onclick="toggleExtra()"> Sim
             </div>
+        </div>
 
-                <div id="campoValorUmidade" class="campo-orçamento" style="display: none;">
-                    <label for="valorUmidade">Valor do tratamento de umidade (R$):</label>
-                    <input type="number" id="valorUmidade" placeholder="Digite o valor combinado">
-                </div>
-
-            <div class="campo-orçamento">
-                <label for="tipoMassa">Tipo de Aplicação de massa</label>
-                <select id="tipoMassa" onclick="toggleMassa()">
-                    <option value="nenhuma">Nenhuma</option>
-                    <option value="pequeno">Pequeno reparo (valor manual)</option>
-                    <option value="corrida">Acabamento fino - Massa corrida</option>
-                    <option value="acrilica">Acabamento fino - Massa acrílica</option>
-                </select>
-            </div>   
-
-            <div id="campoMassaManual" class="campo-orçamento" style="display: none;">
-                <label for="valorMassaManual">Valor do reparo (R$)</label>
-                <input type="number" id="valorMassaManual" placeholder="Valor para a área pequena">
+        <div id="campoServicoExtra" style="display:none;" class="campo-orcamento">
+            <select id="tipoExtra" onchange="atualizarOpcoesExtra()">
+                <option value="">Escolha...</option>
+                <option value="verniz">Verniz (Madeira)</option>
+                <option value="metal">Metais</option>
+            </select>
+            <div id="subOpcoesExtra" style="display:none; margin-top:10px;">
+                <select id="itemExtra"></select>
+                <input type="number" id="qtdExtra" value="1" style="margin-top:10px;" placeholder="Quantidade">
             </div>
+        </div>
 
-            <div id="campoDemaosMassa" class="campo-orçamento" style="display: none;">
-                <label for="demaosMassa">Quantidade de demãos de massa:</label>
-                <input type="number" id="demaosMassa" value="2" min="1">
-            </div>
-
-            <div class="campo-orçamento">
-                <label for=""tipoLixamento">Tipo de Lixamento</label>
-                <select id="tipoLixamento" onchange="toggleLixamento()">
-                    <option value="nenhum">Não precisa lixar</option>
-                    <option value="manual_pequeno">Pequeno reparo</option>
-                    <option value="lixa_corrida">Lixar massa corrida</option>
-                    <option value="lixa_acrilica">Lixar massa acrílica</option>
-                </select>
-            </div>
-
-            <div id="campoLixamentoManual" class="campo-orçamento" style="display: none;">
-                <label for="valorLixaManual">Valor do lixamento (R$)</label>
-                <input type="number" id="valorLixaManual" placeholder="Digite o valor combinado">
-            </div>
-
-            <div class="campo-orçamento">
-                <label for="estadoParede">Estado atual da parede</label>
-                <select id="estadoParede">
-                    <option value="simples">Apenas pintura</option>
-                    <option value="liso">Massa</option>
-                    <option value="gesso">Gesso (Requer fundo preparador)</option>
-                </select>
-            </div>
-
-            <div class="campo-orçamento">
-                <label for="demaosTinta">Quantidade de demãos de tinta:</label>
-                <input type="number" id="demaosTinta" value="2" min="1">
-                <small>Cada demão multiplica o valor basse do estado da parede.</small>
-            </div>
-
-            <button onclick="calcularOrcamento()">Gerar Orçamento final</button>
-            
-            <div id="status" class="aviso">
-                O valor detalhado aparecerá aqui...
-            </div>
-
-            <script src="script.js"></script>
-        </body>
+        <button onclick="calcularOrcamento()">Calcular</button>
+        <div id="status" class="aviso">O resultado aparecerá aqui.</div>
+        
+        <button id="btnCliente" onclick="irParaOrcamento()" style="background:#007bff; display:none;">Ver Versão do Cliente</button>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
